@@ -200,42 +200,126 @@ function promptSelect (employees) {
 
 // add roles
 function addRoles () {
-    
+    db.department.getDepartments(departments => {
+        promptSelectDepartment(departments).then( (department_id) => {
+            promptRoleInfo(department_id);
+        })
+    });
 };
 
 // remove roles
 function removeRoles () {
-    
+    db.role.getRoles(roles => {
+        promptSelectRole(roles).then(function (role_id) {
+            db.Role.removeRole(role_id, role => {
+                mainMenu();
+            })
+        });
+    });
 };
 
 // prompt for employee roles
 function promptRoles () {
-    
+    console.log("Enter new role information");
+    inquirer.prompt([
+        {
+            type: "input",
+            message: "Enter role title: ",
+            name: "title"
+        },
+        {
+            type: "input",
+            message: "Enter role salary: ",
+            name: "salary"
+        }
+    ]).then( (res) => {
+        db.Role.addRole([
+            res.title,
+            res.salary,
+            departmentid
+        ], role => {
+            mainMenu();
+        });
+    });
 };
 
 // prompt for selecting employee roles
 function promptSelectRole () {
-    
+    console.log("Select employee role");
+    return new Promise( (resolve, reject) => {
+        if (!roles) return reject(Error("No roles found!"));
+        let roleTitles = roles.map(r => {
+            return (r.title);
+        });
+        inquirer.prompt({
+            type: "list",
+            name: "role",
+            message: "Choose a role",
+            choices: roleTitles
+        }).then( (res) => {
+            roles.forEach(r => {
+                if (r.title === res.role) {
+                    resolve(r.id);
+                }
+            });
+        });
+    });
 };
 
 // add department
 function addDept () {
-    
+    db.department.addDept([
+        deptName
+    ], department => {
+        mainMenu();
+    })
 };
 
 // remove departments
 function removeDept () {
-    
+    db.department.getDepartments(departments => {
+        promptSelectDepartment(departments).then( (department_id) => {
+            db.department.removeDepartment(department_id, department => {
+                mainMenu();
+            })
+        });
+    });
 };
 
 // view department budget
 function viewBudget () {
-    
+    db.department.getDepartments(departments => {
+        promptSelectDepartment(departments).then( (department_id) => {
+            db.Department.getDepartmentBudget(department_id, departments => {
+                console.log("Department Budget: $");
+                console.table(departments[0]);
+                mainMenu();
+            })
+        });
+    });
 };
 
 // prompt for selecting department
 function promptDept () {
-    
+    console.log("Select department");
+    return new Promise(function (resolve, reject) {
+        if (!departments) return reject(Error("No departments"));
+        let deptNames = departments.map(d => {
+            return (d.name);
+        });
+        inquirer.prompt({
+            type: "list",
+            name: "department",
+            message: "Choose department",
+            choices: deptNames
+        }).then(function (res) {
+            departments.forEach(d => {
+                if (d.name === res.department) {
+                    resolve(d.id);
+                }
+            })
+        });
+    });
 };
 
 // display functions
