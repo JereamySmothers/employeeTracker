@@ -325,15 +325,30 @@ function promptDept () {
 // display functions
 // display employees
 function displayEmployees () {
-    
+    db.employee.getEmployees( (res) => {
+        console.log("___Employees___");
+        res = res.reduce((acc, { id, ...x }) => { acc[id] = x; return acc }, {});
+        console.table(res);
+        mainMenu();
+    })
 };
 
 // display roles
 function displayRoles () {
-    
+    db.role.getRoles( (res) => {
+        console.log("___Roles___");
+        res = res.reduce((acc, { id, ...x }) => { acc[id] = x; return acc }, {});
+        console.table(res);
+        mainMenu();
+    })
 };
 
 // display departments
 function displayDept () {
-    
+    db.department.getDeptartments( (res) => {
+        console.log("___Departments___");
+        res = res.reduce((acc, { id, ...x }) => { acc[id] = x; return acc }, {});
+        console.table(res);
+        mainMenu();
+    })
 };
