@@ -1,7 +1,7 @@
 // module and other imports
 const inquirer = require("inquirer");
 var db = require("./db/index");
-
+console.log(db)
 // menu variable
 var menu = [{
     type: "list",
@@ -124,7 +124,7 @@ function removeEmployee () {
 // view department employees
 function viewEmployeeDept () {
     db.department.getDepartments(departments => {
-        promptDept(departments).then( (dept_id) {
+        promptDept(departments).then( (dept_id) => {
             db.employee.getEmployeeDept(dept_id, employees => {
                 employees = employees.reduce((acc, { id, ...x }) => {acc[id] = x; return acc}, {});
                 console.table(employees);
@@ -146,18 +146,18 @@ function promptInfo () {
             type: "input",
             message: "Enter first name: ",
             name: "firstName"
-        }
+        },
         {
             type: "input",
             message: "Enter last name: ",
             name: "lastName"
-        }
+        },
         {
             type: "list",
             message: "Select manager: ",
             name: "manager",
             choices: "managerNames"
-        }
+        },
     ]).then( (res) => {
         var manager_id;
         managers.forEach(m => {
@@ -178,7 +178,7 @@ function promptInfo () {
 
 // prompt for select employee
 function promptSelect (employees) {
-    return new Promise( (resolve, reject) {
+    return new Promise( (resolve, reject) => {
         if (!employees) return reject(Error("No employees found"));
         let names = employees.map(e => {
             return (e.first_name + " " + e.last_name);

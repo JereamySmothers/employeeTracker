@@ -1,3 +1,4 @@
+const connection = require('../config/connection')
 // employees class
 class employee {
 
@@ -8,7 +9,8 @@ class employee {
     getEmployees(cb) {
         console.log("Gathering employees");
         this.connection.query(`
-        SELECT employee.id, employee.first_name, employee.last_name, role.title AS role_title, manager.first_name AS manager
+        SELECT employee.id, employee.first_name, employee.last_name, role.title 
+        AS role_title, manager.first_name AS manager
         FROM employee
         LEFT JOIN role ON employee.role_id = role.id
         LEFT JOIN employee manager ON employee.manager_id = manager.id
@@ -50,4 +52,4 @@ class employee {
         });
     }
 }
-module.exports = employee;
+module.exports = new employee(connection);
